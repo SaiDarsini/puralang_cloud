@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workspace | PuraLang Cloud</title>
+  <style>
+    :root {
+      --bg-dark: #0a0f0d;
+      --card-bg: #121c17;
+      --accent-green: #00e676;
+      --accent-glow: rgba(0, 230, 118, 0.25);
+      --text-main: #ecf0f1;
+      --text-muted: #95a5a6;
+      --border-color: #1b2e25;
+      --input-bg: #080d0a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem 2rem;
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .logo-container {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; color: var(--text-main);
+      font-weight: 700; font-size: 1.2rem;
+    }
+
+    .logo-img { width: 34px; height: 34px; color: var(--accent-green); filter: drop-shadow(0 0 6px var(--accent-green)); }
+    .logo-text span { color: var(--accent-green); }
+    .nav-actions { display: flex; gap: 1rem; align-items: center; }
+
+    .btn-nav {
+      color: var(--text-muted); text-decoration: none; font-size: 0.9rem;
+      padding: 0.4rem 0.8rem; border: 1px solid var(--border-color);
+      border-radius: 6px; transition: all 0.2s;
+    }
+    .btn-nav:hover { color: var(--accent-green); border-color: var(--accent-green); }
+
+    /* Section Tab Bar */
+    .section-tabs {
+      display: flex;
+      gap: 0.35rem;
+      padding: 0.75rem 1.25rem 0;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      overflow-x: auto;
+      flex-wrap: nowrap;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.55rem 1rem;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.25s ease;
+      border-bottom: none;
+    }
+
+    .tab-btn:hover { color: var(--accent-green); border-color: var(--accent-green); }
+
+    .tab-btn.active {
+      background: var(--bg-dark);
+      color: var(--accent-green);
+      border-color: var(--accent-green);
+      box-shadow: 0 -2px 12px var(--accent-glow);
+    }
+
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 1.25rem;
+      padding: 1.25rem;
+      flex: 1;
+    }
+
+    .section-panel { display: none; }
+    .section-panel.active {
+      display: contents;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .panel-title {
+      font-size: 1.1rem; font-weight: 600;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .section-badge {
+      font-size: 0.7rem;
+      background: rgba(0, 230, 118, 0.12);
+      color: var(--accent-green);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 230, 118, 0.3);
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    label { font-size: 0.85rem; color: var(--text-muted); }
+
+    input[type="file"], input[type="text"], textarea, select {
+      background-color: var(--input-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.65rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="file"] { cursor: pointer; }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    textarea.code-editor {
+      font-family: 'Consolas', 'Courier New', monospace;
+      height: 120px;
+      resize: vertical;
+      color: var(--accent-green);
+      line-height: 1.4;
+    }
+
+    .btn-green {
+      background-color: var(--accent-green);
+      color: var(--bg-dark);
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-green:hover { box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-1px); }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--accent-green);
+      border: 1px solid var(--accent-green);
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { background-color: var(--accent-green); color: var(--bg-dark); }
+
+    .btn-row { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    .metric-card {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem;
+    }
+    .metric-card span { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+    .metric-card div { font-size: 1.4rem; font-weight: 700; color: var(--accent-green); margin-top: 0.2rem; }
+
+    .table-wrapper {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: auto;
+      max-height: 340px;
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th, td { padding: 0.65rem 0.85rem; text-align: left; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+    th { background: #0f1712; color: var(--accent-green); position: sticky; top: 0; }
+    tr:hover { background-color: rgba(0, 230, 118, 0.03); }
+
+    .chart-box, .preview-box {
+      text-align: center;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .chart-box img, .preview-box img { max-width: 100%; border-radius: 6px; }
+
+    .text-preview {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      max-height: 280px;
+      overflow: auto;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      white-space: pre-wrap;
+    }
+
+    .status-badge { font-size: 0.8rem; color: var(--text-muted); display: block; margin-top: 0.25rem; }
+
+    .hint { font-size: 0.78rem; color: var(--text-muted); font-style: italic; }
+
+    @media (max-width: 900px) {
+      .workspace-grid { grid-template-columns: 1fr; }
+      .metrics-row { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="landing.html" class="logo-container">
+      <svg class="logo-img" viewBox="30 25 200 205" xmlns="http://www.w3.org/2000/svg">
+        <rect x="123" y="48" width="14" height="14" fill="currentColor" opacity="0.9" transform="rotate(45 130 55)"/>
+        <rect x="83" y="58" width="12" height="12" fill="currentColor" opacity="0.65" transform="rotate(45 89 64)"/>
+        <rect x="163" y="58" width="12" height="12" fill="currentColor" opacity="0.65" transform="rotate(45 169 64)"/>
+        <path d="M70 85 L190 85 L148 148 L148 188 L112 188 L112 148 Z" fill="none" stroke="currentColor" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="130" cy="208" r="9" fill="currentColor"/>
+      </svg>
+      <div class="logo-text">PuraLang <span>Cloud Workspace</span></div>
+    </a>
+    <div class="nav-actions">
+      <a href="landing.html" class="btn-nav">Home</a>
+      <a href="login.html" class="btn-nav">Logout</a>
+    </div>
+  </header>
+
+  <!-- 6-Section Tab Navigation -->
+  <nav class="section-tabs" id="sectionTabs">
+    <button class="tab-btn active" data-section="csv">📊 CSV</button>
+    <button class="tab-btn" data-section="excel">📈 Excel</button>
+    <button class="tab-btn" data-section="word">📄 Word</button>
+    <button class="tab-btn" data-section="ppt">📊 PowerPoint</button>
+    <button class="tab-btn" data-section="pdf">📕 PDF</button>
+    <button class="tab-btn" data-section="image">🖼️ Image/Pic</button>
+  </nav>
+
+  <main class="workspace-grid" id="workspaceGrid">
+
+    <!-- ==================== CSV SECTION ==================== -->
+    <div class="section-panel active" id="section-csv">
+      <section class="panel">
+        <div class="panel-title">
+          <span>CSV Controls & DSL</span>
+          <span class="section-badge">.csv</span>
+        </div>
+        <div class="form-group">
+          <label for="csvFile">Upload CSV Dataset</label>
+          <input type="file" id="csvFile" accept=".csv">
+        </div>
+        <div class="form-group">
+          <label for="csvPrompt">Natural Language Request (AI)</label>
+          <input type="text" id="csvPrompt" placeholder='e.g., "filter students of Dept CSE"'>
+          <button class="btn-secondary" onclick="generateDslRule()">Generate DSL Rules</button>
+        </div>
+        <div class="form-group">
+          <label for="dslEditor">Executable PuraLang DSL</label>
+          <textarea id="dslEditor" class="code-editor" placeholder='LOAD "dataset.csv"'></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn-green" onclick="runCsvPipeline()">Execute Pipeline</button>
+          <button class="btn-secondary" onclick="downloadFile('/api/v1/download')">Download Cleaned CSV</button>
+        </div>
+        <span id="csvStatus" class="status-badge">Ready for CSV execution.</span>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title"><span>CSV Output & Analytics</span></div>
+        <div class="metrics-row">
+          <div class="metric-card"><span>Rows Before</span><div id="csvMBefore">0</div></div>
+          <div class="metric-card"><span>Rows After</span><div id="csvMAfter">0</div></div>
+          <div class="metric-card"><span>Rows Dropped</span><div id="csvMDropped">0</div></div>
+          <div class="metric-card"><span>Null Values</span><div id="csvMNulls">0</div></div>
+        </div>
+        <div class="table-wrapper"><table id="csvTable"><thead><tr><th>Upload CSV to begin</th></tr></thead><tbody></tbody></table></div>
+        <div class="chart-box" id="csvChartWrapper" style="display:none;">
+          <img id="csvChartImg" src="" alt="Chart">
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================== EXCEL SECTION ==================== -->
+    <div class="section-panel" id="section-excel">
+      <section class="panel">
+        <div class="panel-title">
+          <span>Excel Workbook Controls</span>
+          <span class="section-badge">.xlsx / .xls</span>
+        </div>
+        <div class="form-group">
+          <label for="excelFile">Upload Excel File</label>
+          <input type="file" id="excelFile" accept=".xlsx,.xls">
+        </div>
+        <div class="form-group">
+          <label for="excelSheet">Sheet Name (optional)</label>
+          <input type="text" id="excelSheet" placeholder="Leave blank for first sheet">
+        </div>
+        <div class="form-group">
+          <label for="excelPrompt">Natural Language Request</label>
+          <input type="text" id="excelPrompt" placeholder='e.g., "rename Dept to Department and filter CSE"'>
+        </div>
+        <div class="btn-row">
+          <button class="btn-green" onclick="runExcelPipeline()">Process Excel</button>
+          <button class="btn-secondary" onclick="downloadFile('/api/v1/download-excel')">Download Excel</button>
+        </div>
+        <span id="excelStatus" class="status-badge">Ready for Excel processing.</span>
+        <p class="hint">Supports multi-sheet browsing, column cleaning, and formula inspection.</p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title"><span>Excel Preview & Metrics</span></div>
+        <div class="metrics-row">
+          <div class="metric-card"><span>Rows Before</span><div id="excelMBefore">0</div></div>
+          <div class="metric-card"><span>Rows After</span><div id="excelMAfter">0</div></div>
+          <div class="metric-card"><span>Columns</span><div id="excelMCols">0</div></div>
+          <div class="metric-card"><span>Null Values</span><div id="excelMNulls">0</div></div>
+        </div>
+        <div class="text-preview" id="excelMeta">Sheets and formulas will appear here.</div>
+        <div class="table-wrapper"><table id="excelTable"><thead><tr><th>Upload Excel to begin</th></tr></thead><tbody></tbody></table></div>
+      </section>
+    </div>
+
+    <!-- ==================== WORD SECTION ==================== -->
+    <div class="section-panel" id="section-word">
+      <section class="panel">
+        <div class="panel-title">
+          <span>Word Document Controls</span>
+          <span class="section-badge">.docx</span>
+        </div>
+        <div class="form-group">
+          <label for="wordFile">Upload Word Document</label>
+          <input type="file" id="wordFile" accept=".docx">
+        </div>
+        <div class="form-group">
+          <label for="wordPrompt">Natural Language Request</label>
+          <input type="text" id="wordPrompt" placeholder='e.g., "replace Company with PuraLang and summarize"'>
+        </div>
+        <div class="btn-row">
+          <button class="btn-green" onclick="runWordPipeline()">Process Word Doc</button>
+          <button class="btn-secondary" onclick="downloadFile('/api/v1/download-word')">Download Word</button>
+        </div>
+        <span id="wordStatus" class="status-badge">Ready for Word processing.</span>
+        <p class="hint">Paragraph editing, table modifications, AI summarizing, and text replacement.</p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title"><span>Word Preview</span></div>
+        <div class="metrics-row">
+          <div class="metric-card"><span>Paragraphs</span><div id="wordMPara">0</div></div>
+          <div class="metric-card"><span>Tables</span><div id="wordMTables">0</div></div>
+          <div class="metric-card"><span>Changes</span><div id="wordMChanges">0</div></div>
+          <div class="metric-card"><span>Status</span><div id="wordMStatus">—</div></div>
+        </div>
+        <div class="text-preview" id="wordPreview">Document paragraphs will appear here.</div>
+      </section>
+    </div>
+
+    <!-- ==================== POWERPOINT SECTION ==================== -->
+    <div class="section-panel" id="section-ppt">
+      <section class="panel">
+        <div class="panel-title">
+          <span>PowerPoint Controls</span>
+          <span class="section-badge">.pptx</span>
+        </div>
+        <div class="form-group">
+          <label for="pptFile">Upload Presentation</label>
+          <input type="file" id="pptFile" accept=".pptx">
+        </div>
+        <div class="form-group">
+          <label for="pptPrompt">Natural Language Request</label>
+          <input type="text" id="pptPrompt" placeholder='e.g., "replace 2024 with 2026 and add summary slide"'>
+        </div>
+        <div class="btn-row">
+          <button class="btn-green" onclick="runPptPipeline()">Process PowerPoint</button>
+          <button class="btn-secondary" onclick="downloadFile('/api/v1/download-ppt')">Download PPTX</button>
+        </div>
+        <span id="pptStatus" class="status-badge">Ready for PowerPoint processing.</span>
+        <p class="hint">Slide editing, shape/table text replacement, and auto summary slides.</p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title"><span>Slide Deck Preview</span></div>
+        <div class="metrics-row">
+          <div class="metric-card"><span>Slides</span><div id="pptMSlides">0</div></div>
+          <div class="metric-card"><span>Changes</span><div id="pptMChanges">0</div></div>
+          <div class="metric-card"><span>Status</span><div id="pptMStatus">—</div></div>
+          <div class="metric-card"><span>Format</span><div>PPTX</div></div>
+        </div>
+        <div class="text-preview" id="pptPreview">Slide summaries will appear here.</div>
+      </section>
+    </div>
+
+    <!-- ==================== PDF SECTION ==================== -->
+    <div class="section-panel" id="section-pdf">
+      <section class="panel">
+        <div class="panel-title">
+          <span>PDF Controls</span>
+          <span class="section-badge">.pdf</span>
+        </div>
+        <div class="form-group">
+          <label for="pdfFile">Upload PDF Document</label>
+          <input type="file" id="pdfFile" accept=".pdf">
+        </div>
+        <div class="form-group">
+          <label for="pdfPrompt">Natural Language Request</label>
+          <input type="text" id="pdfPrompt" placeholder='e.g., "extract tables and add CONFIDENTIAL watermark"'>
+        </div>
+        <div class="btn-row">
+          <button class="btn-green" onclick="runPdfPipeline()">Process PDF</button>
+          <button class="btn-secondary" onclick="downloadFile('/api/v1/download-pdf')">Download PDF</button>
+          <button class="btn-secondary" onclick="downloadFile('/api/v1/download-extracted')">Download Extracted CSV</button>
+        </div>
+        <span id="pdfStatus" class="status-badge">Ready for PDF processing.</span>
+        <p class="hint">Table extraction, watermarking (CONFIDENTIAL/APPROVED), merge/split support.</p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title"><span>PDF Preview & Extracted Data</span></div>
+        <div class="metrics-row">
+          <div class="metric-card"><span>Pages</span><div id="pdfMPages">0</div></div>
+          <div class="metric-card"><span>Tables Found</span><div id="pdfMTables">0</div></div>
+          <div class="metric-card"><span>Text Chars</span><div id="pdfMText">0</div></div>
+          <div class="metric-card"><span>Action</span><div id="pdfMAction">—</div></div>
+        </div>
+        <div class="text-preview" id="pdfTextPreview">Extracted text will appear here.</div>
+        <div class="table-wrapper"><table id="pdfTable"><thead><tr><th>Extracted tables appear here</th></tr></thead><tbody></tbody></table></div>
+      </section>
+    </div>
+
+    <!-- ==================== IMAGE SECTION ==================== -->
+    <div class="section-panel" id="section-image">
+      <section class="panel">
+        <div class="panel-title">
+          <span>Image / OCR Controls</span>
+          <span class="section-badge">.png / .jpg / .jpeg</span>
+        </div>
+        <div class="form-group">
+          <label for="imageFile">Upload Image</label>
+          <input type="file" id="imageFile" accept=".png,.jpg,.jpeg">
+        </div>
+        <div class="form-group">
+          <label for="imagePrompt">Natural Language Request</label>
+          <input type="text" id="imagePrompt" placeholder='e.g., "extract table data and describe the chart"'>
+        </div>
+        <div class="btn-row">
+          <button class="btn-green" onclick="runImagePipeline()">Process Image</button>
+          <button class="btn-secondary" onclick="downloadFile('/api/v1/download-image')">Download Annotated PNG</button>
+          <button class="btn-secondary" onclick="downloadFile('/api/v1/download-extracted')">Export Table CSV</button>
+        </div>
+        <span id="imageStatus" class="status-badge">Ready for image OCR & analysis.</span>
+        <p class="hint">OCR text extraction, Gemini Vision analysis, and table export to CSV.</p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title"><span>Image Analysis Output</span></div>
+        <div class="metrics-row">
+          <div class="metric-card"><span>Width</span><div id="imgMWidth">0</div></div>
+          <div class="metric-card"><span>Height</span><div id="imgMHeight">0</div></div>
+          <div class="metric-card"><span>OCR Chars</span><div id="imgMOcr">0</div></div>
+          <div class="metric-card"><span>Table Rows</span><div id="imgMRows">0</div></div>
+        </div>
+        <div class="preview-box" id="imagePreviewBox" style="display:none;">
+          <img id="imagePreviewImg" src="" alt="Annotated image">
+        </div>
+        <div class="text-preview" id="imageTextPreview">OCR and AI analysis will appear here.</div>
+        <div class="table-wrapper"><table id="imageTable"><thead><tr><th>Extracted table rows</th></tr></thead><tbody></tbody></table></div>
+      </section>
+    </div>
+
+  </main>
+
+  <script>
+    // ── Tab Switching ──
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('section-' + btn.dataset.section).classList.add('active');
+      });
+    });
+
+    function downloadFile(url) {
+      window.location.href = url;
+    }
+
+    function renderTable(tableId, dataArray) {
+      const table = document.getElementById(tableId);
+      if (!dataArray || dataArray.length === 0) {
+        table.innerHTML = '<thead><tr><th>No data to display</th></tr></thead>';
+        return;
+      }
+      const headers = Object.keys(dataArray[0]);
+      let html = '<thead><tr>' + headers.map(h => `<th>${h}</th>`).join('') + '</tr></thead><tbody>';
+      dataArray.forEach(row => {
+        html += '<tr>' + headers.map(h => `<td>${row[h] ?? ''}</td>`).join('') + '</tr>';
+      });
+      html += '</tbody>';
+      table.innerHTML = html;
+    }
+
+    async function postFormData(url, formData) {
+      const response = await fetch(url, { method: 'POST', body: formData });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || 'Request failed');
+      return data;
+    }
+
+    // ── CSV ──
+    async function generateDslRule() {
+      const promptText = document.getElementById('csvPrompt').value.trim();
+      const fileInput = document.getElementById('csvFile');
+      const filename = fileInput.files[0] ? fileInput.files[0].name : 'dataset.csv';
+      const status = document.getElementById('csvStatus');
+      if (!promptText) { alert('Please enter a natural language request.'); return; }
+      status.innerText = 'Asking AI engine...';
+      try {
+        const res = await fetch('/api/v1/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: promptText, filename })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          document.getElementById('dslEditor').value = data.dsl_rule;
+          status.innerText = 'DSL rule generated successfully.';
+        } else {
+          status.innerText = 'AI Error: ' + (data.detail || 'Generation failed.');
+        }
+      } catch { status.innerText = 'Failed to communicate with server.'; }
+    }
+
+    async function runCsvPipeline() {
+      const fileInput = document.getElementById('csvFile');
+      const status = document.getElementById('csvStatus');
+      if (!fileInput.files[0]) { alert('Please select a CSV file.'); return; }
+      status.innerText = 'Processing dataset...';
+      const fd = new FormData();
+      fd.append('file', fileInput.files[0]);
+      fd.append('dsl_rule', document.getElementById('dslEditor').value);
+      try {
+        const result = await postFormData('/api/v1/execute', fd);
+        status.innerText = 'Dataset processed successfully!';
+        document.getElementById('csvMBefore').innerText = result.metrics.rows_before;
+        document.getElementById('csvMAfter').innerText = result.metrics.rows_after;
+        document.getElementById('csvMDropped').innerText = result.metrics.rows_dropped;
+        document.getElementById('csvMNulls').innerText = result.metrics.null_count;
+        renderTable('csvTable', result.preview.after);
+        if (result.chart_image) {
+          document.getElementById('csvChartWrapper').style.display = 'block';
+          document.getElementById('csvChartImg').src = 'data:image/png;base64,' + result.chart_image;
+        }
+      } catch (e) { status.innerText = 'Error: ' + e.message; }
+    }
+
+    // ── Excel ──
+    async function runExcelPipeline() {
+      const fileInput = document.getElementById('excelFile');
+      const status = document.getElementById('excelStatus');
+      if (!fileInput.files[0]) { alert('Please select an Excel file.'); return; }
+      status.innerText = 'Processing Excel workbook...';
+      const fd = new FormData();
+      fd.append('file', fileInput.files[0]);
+      fd.append('prompt', document.getElementById('excelPrompt').value);
+      fd.append('sheet_name', document.getElementById('excelSheet').value);
+      try {
+        const result = await postFormData('/api/v1/process-excel', fd);
+        status.innerText = `Processed sheet "${result.active_sheet}" successfully!`;
+        document.getElementById('excelMBefore').innerText = result.metrics.rows_before;
+        document.getElementById('excelMAfter').innerText = result.metrics.rows_after;
+        document.getElementById('excelMCols').innerText = result.metrics.columns;
+        document.getElementById('excelMNulls').innerText = result.metrics.null_count;
+        let meta = `Sheets: ${result.sheets.join(', ')}\nActive: ${result.active_sheet}`;
+        if (result.formulas.length) meta += '\n\nFormulas:\n' + result.formulas.map(f => `${f.cell}: ${f.formula}`).join('\n');
+        document.getElementById('excelMeta').innerText = meta;
+        renderTable('excelTable', result.preview);
+      } catch (e) { status.innerText = 'Error: ' + e.message; }
+    }
+
+    // ── Word ──
+    async function runWordPipeline() {
+      const fileInput = document.getElementById('wordFile');
+      const status = document.getElementById('wordStatus');
+      if (!fileInput.files[0]) { alert('Please select a Word document.'); return; }
+      status.innerText = 'Processing Word document...';
+      const fd = new FormData();
+      fd.append('file', fileInput.files[0]);
+      fd.append('prompt', document.getElementById('wordPrompt').value);
+      try {
+        const result = await postFormData('/api/v1/process-word', fd);
+        status.innerText = 'Word document processed!';
+        document.getElementById('wordMPara').innerText = result.metrics.paragraphs;
+        document.getElementById('wordMTables').innerText = result.metrics.tables;
+        document.getElementById('wordMChanges').innerText = result.metrics.changes;
+        document.getElementById('wordMStatus').innerText = 'Done';
+        let preview = result.preview.paragraphs.join('\n\n');
+        if (result.preview.tables.length) {
+          preview += '\n\n--- Tables ---\n';
+          result.preview.tables.forEach((t, i) => {
+            preview += `\nTable ${i + 1}:\n` + t.map(r => r.join(' | ')).join('\n');
+          });
+        }
+        document.getElementById('wordPreview').innerText = preview || 'No text content found.';
+      } catch (e) { status.innerText = 'Error: ' + e.message; }
+    }
+
+    // ── PowerPoint ──
+    async function runPptPipeline() {
+      const fileInput = document.getElementById('pptFile');
+      const status = document.getElementById('pptStatus');
+      if (!fileInput.files[0]) { alert('Please select a PowerPoint file.'); return; }
+      status.innerText = 'Processing presentation...';
+      const fd = new FormData();
+      fd.append('file', fileInput.files[0]);
+      fd.append('prompt', document.getElementById('pptPrompt').value);
+      try {
+        const result = await postFormData('/api/v1/process-ppt', fd);
+        status.innerText = 'PowerPoint processed!';
+        document.getElementById('pptMSlides').innerText = result.metrics.slides;
+        document.getElementById('pptMChanges').innerText = result.metrics.changes;
+        document.getElementById('pptMStatus').innerText = 'Done';
+        document.getElementById('pptPreview').innerText = result.preview.slides
+          .map(s => `Slide ${s.slide}: ${s.text || '(empty)'}`).join('\n\n');
+      } catch (e) { status.innerText = 'Error: ' + e.message; }
+    }
+
+    // ── PDF ──
+    async function runPdfPipeline() {
+      const fileInput = document.getElementById('pdfFile');
+      const status = document.getElementById('pdfStatus');
+      if (!fileInput.files[0]) { alert('Please select a PDF file.'); return; }
+      status.innerText = 'Processing PDF...';
+      const fd = new FormData();
+      fd.append('file', fileInput.files[0]);
+      fd.append('prompt', document.getElementById('pdfPrompt').value);
+      fd.append('action', 'auto');
+      try {
+        const result = await postFormData('/api/v1/process-pdf', fd);
+        status.innerText = 'PDF processed!';
+        document.getElementById('pdfMPages').innerText = result.metrics.pages;
+        document.getElementById('pdfMTables').innerText = result.metrics.tables_found;
+        document.getElementById('pdfMText').innerText = result.metrics.text_length;
+        document.getElementById('pdfMAction').innerText = result.actions_applied.watermark_applied || 'Extract';
+        document.getElementById('pdfTextPreview').innerText = result.preview.text_snippet || 'No text extracted.';
+        if (result.preview.tables.length && result.preview.tables[0].preview.length) {
+          renderTable('pdfTable', result.preview.tables[0].preview);
+        }
+      } catch (e) { status.innerText = 'Error: ' + e.message; }
+    }
+
+    // ── Image ──
+    async function runImagePipeline() {
+      const fileInput = document.getElementById('imageFile');
+      const status = document.getElementById('imageStatus');
+      if (!fileInput.files[0]) { alert('Please select an image file.'); return; }
+      status.innerText = 'Running OCR & AI analysis...';
+      const fd = new FormData();
+      fd.append('file', fileInput.files[0]);
+      fd.append('prompt', document.getElementById('imagePrompt').value);
+      try {
+        const result = await postFormData('/api/v1/process-image', fd);
+        status.innerText = 'Image processed!';
+        document.getElementById('imgMWidth').innerText = result.metrics.width;
+        document.getElementById('imgMHeight').innerText = result.metrics.height;
+        document.getElementById('imgMOcr').innerText = result.metrics.ocr_chars;
+        document.getElementById('imgMRows').innerText = result.metrics.table_rows;
+        let text = '';
+        if (result.preview.ocr_text) text += '--- OCR ---\n' + result.preview.ocr_text + '\n\n';
+        if (result.preview.ai_analysis) text += '--- AI Analysis ---\n' + result.preview.ai_analysis;
+        document.getElementById('imageTextPreview').innerText = text || 'No text detected.';
+        if (result.preview.annotated_image) {
+          document.getElementById('imagePreviewBox').style.display = 'block';
+          document.getElementById('imagePreviewImg').src = 'data:image/png;base64,' + result.preview.annotated_image;
+        }
+        if (result.preview.table.length) renderTable('imageTable', result.preview.table);
+      } catch (e) { status.innerText = 'Error: ' + e.message; }
+    }
+  </script>
+</body>
+</html>

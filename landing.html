@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PuraLang Cloud | Next-Gen Multi-Format Workspace</title>
+  <style>
+    :root {
+      --bg-dark: #0a0f0d;
+      --card-bg: #121c17;
+      --accent-green: #00e676;
+      --accent-glow: rgba(0, 230, 118, 0.25);
+      --text-main: #ecf0f1;
+      --text-muted: #95a5a6;
+      --border-color: #1b2e25;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header Navbar */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 5%;
+      background-color: rgba(10, 15, 13, 0.9);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+
+    .logo-img {
+      width: 40px;
+      height: 40px;
+      display: block;
+      color: var(--accent-green);
+      filter: drop-shadow(0 0 8px var(--accent-green));
+    }
+
+    .logo-text {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .logo-text span {
+      color: var(--accent-green);
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 0.8rem;
+      align-items: center;
+    }
+
+    .nav-btn {
+      background-color: transparent;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 0.55rem 1.2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+    }
+
+    .nav-btn-register {
+      background-color: transparent;
+      color: var(--accent-green);
+      border: 1px solid var(--accent-green);
+      padding: 0.55rem 1.2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn-register:hover {
+      background-color: rgba(0, 230, 118, 0.1);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .nav-btn-primary {
+      background-color: var(--accent-green);
+      color: var(--bg-dark);
+      border: 1px solid var(--accent-green);
+      padding: 0.55rem 1.2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .nav-btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 18px rgba(0, 230, 118, 0.4);
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 4rem 1rem 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-logo-large {
+      width: 80px;
+      height: 80px;
+      display: block;
+      margin: 0 auto 1.2rem;
+      color: var(--accent-green);
+      filter: drop-shadow(0 0 20px var(--accent-green));
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .hero h1 span {
+      color: var(--accent-green);
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background-color: var(--accent-green);
+      color: var(--bg-dark);
+      padding: 0.8rem 2.2rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border-radius: 8px;
+      text-decoration: none;
+      box-shadow: 0 0 20px var(--accent-glow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(0, 230, 118, 0.4);
+    }
+
+    .btn-secondary {
+      display: inline-block;
+      background-color: transparent;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 0.8rem 2.2rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+      transform: translateY(-2px);
+    }
+
+    /* Section Title */
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      margin: 3rem 0 1.5rem;
+    }
+
+    .section-title span {
+      color: var(--accent-green);
+    }
+
+    /* 6-Category Features Grid */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      padding: 1rem 5% 4rem;
+      max-width: 1300px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .category-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .category-card:hover {
+      border-color: var(--accent-green);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 230, 118, 0.08);
+    }
+
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .category-icon {
+      font-size: 2rem;
+      background: rgba(0, 230, 118, 0.1);
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    .category-card h3 {
+      font-size: 1.25rem;
+      color: var(--text-main);
+    }
+
+    .category-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-top: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .feature-list li {
+      font-size: 0.88rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feature-list li::before {
+      content: "✓";
+      color: var(--accent-green);
+      font-weight: bold;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border-color);
+      background-color: #070b09;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <a href="landing.html" class="logo-container">
+      <svg class="logo-img" viewBox="30 25 200 205" xmlns="http://www.w3.org/2000/svg">
+        <rect x="123" y="48" width="14" height="14" fill="currentColor" opacity="0.9" transform="rotate(45 130 55)"/>
+        <rect x="83" y="58" width="12" height="12" fill="currentColor" opacity="0.65" transform="rotate(45 89 64)"/>
+        <rect x="163" y="58" width="12" height="12" fill="currentColor" opacity="0.65" transform="rotate(45 169 64)"/>
+        <path d="M70 85 L190 85 L148 148 L148 188 L112 188 L112 148 Z" fill="none" stroke="currentColor" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="130" cy="208" r="9" fill="currentColor"/>
+      </svg>
+      <div class="logo-text">PuraLang <span>Cloud</span></div>
+    </a>
+
+    <div class="nav-actions">
+      <a href="login.html" class="nav-btn">Sign In</a>
+      <a href="login.html?action=register" class="nav-btn-register">Register</a>
+      <a href="workspace" class="nav-btn-primary">Open Workspace</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Banner -->
+    <section class="hero">
+      <svg class="hero-logo-large" viewBox="30 25 200 205" xmlns="http://www.w3.org/2000/svg">
+        <rect x="123" y="48" width="14" height="14" fill="currentColor" opacity="0.9" transform="rotate(45 130 55)"/>
+        <rect x="83" y="58" width="12" height="12" fill="currentColor" opacity="0.65" transform="rotate(45 89 64)"/>
+        <rect x="163" y="58" width="12" height="12" fill="currentColor" opacity="0.65" transform="rotate(45 169 64)"/>
+        <path d="M70 85 L190 85 L148 148 L148 188 L112 188 L112 148 Z" fill="none" stroke="currentColor" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="130" cy="208" r="9" fill="currentColor"/>
+      </svg>
+      <h1>One AI Platform for <span>All File Formats</span></h1>
+      <p>Transform, edit, clean, and extract data from CSVs, Excel sheets, Word documents, PowerPoint decks, PDFs, and Images using simple English commands.</p>
+
+      <div class="hero-buttons">
+        <a href="login.html?action=register" class="btn-primary">Create Free Account</a>
+        <a href="workspace" class="btn-secondary">Try Demo Workspace &rarr;</a>
+      </div>
+    </section>
+
+    <h2 class="section-title">Supported <span>Categories & Features</span></h2>
+
+    <!-- 6-Category Feature Grid -->
+    <section class="category-grid">
+
+      <!-- 1. CSV Category -->
+      <div class="category-card">
+        <div class="category-header">
+          <div class="category-icon">📊</div>
+          <div>
+            <h3>CSV Datasets</h3>
+            <span style="font-size: 0.75rem; color: var(--accent-green);">PuraLang Core Engine</span>
+          </div>
+        </div>
+        <p>Clean and transform large structured datasets using custom domain-specific language queries or AI prompts.</p>
+        <ul class="feature-list">
+          <li>Multi-column filtering (==, !=, >, &lt;)</li>
+          <li>Column reordering, dropping, & sorting</li>
+          <li>Real-time Matplotlib distribution charts</li>
+          <li>Live data table preview & streaming downloads</li>
+        </ul>
+      </div>
+
+      <!-- 2. Excel Category -->
+      <div class="category-card">
+        <div class="category-header">
+          <div class="category-icon">📈</div>
+          <div>
+            <h3>Excel Workbooks</h3>
+            <span style="font-size: 0.75rem; color: var(--accent-green);">Multi-Sheet Processing</span>
+          </div>
+        </div>
+        <p>Manipulate `.xlsx` and `.xls` workbooks with full multi-sheet awareness and structured cleaning workflows.</p>
+        <ul class="feature-list">
+          <li>Sheet selector & active tab isolation</li>
+          <li>Header auto-detection in messy titles</li>
+          <li>Null value imputations & string formatters</li>
+          <li>Export modified sheets to Excel or CSV</li>
+        </ul>
+      </div>
+
+      <!-- 3. Word Category -->
+      <div class="category-card">
+        <div class="category-header">
+          <div class="category-icon">📄</div>
+          <div>
+            <h3>Word Documents</h3>
+            <span style="font-size: 0.75rem; color: var(--accent-green);">In-Place Document Editing</span>
+          </div>
+        </div>
+        <p>Upload existing `.docx` documents and apply natural language edits without breaking layouts or fonts.</p>
+        <ul class="feature-list">
+          <li>In-place paragraph text replacement</li>
+          <li>Embedded Word table data updates</li>
+          <li>Heading restyling & custom color themes</li>
+          <li>AI executive summary auto-generation</li>
+        </ul>
+      </div>
+
+      <!-- 4. PPT Category -->
+      <div class="category-card">
+        <div class="category-header">
+          <div class="category-icon">📊</div>
+          <div>
+            <h3>PowerPoint Decks</h3>
+            <span style="font-size: 0.75rem; color: var(--accent-green);">Slide Deck Restyling</span>
+          </div>
+        </div>
+        <p>Transform presentation decks programmatically using natural English prompt instructions.</p>
+        <ul class="feature-list">
+          <li>Slide title & text shape edits</li>
+          <li>In-place slide table text updates</li>
+          <li>Auto-generate summary slides from data</li>
+          <li>Preserves slide master templates & themes</li>
+        </ul>
+      </div>
+
+      <!-- 5. PDF Category -->
+      <div class="category-card">
+        <div class="category-header">
+          <div class="category-icon">📕</div>
+          <div>
+            <h3>PDF Documents</h3>
+            <span style="font-size: 0.75rem; color: var(--accent-green);">Extraction & Stamping</span>
+          </div>
+        </div>
+        <p>Parse unformatted PDF files to extract buried tables or generate stamped PDF reports.</p>
+        <ul class="feature-list">
+          <li>PDF table extraction directly into DataFrames</li>
+          <li>Add "CONFIDENTIAL" / "APPROVED" watermarks</li>
+          <li>Merge or split multi-page PDF files</li>
+          <li>High-precision ReportLab PDF generation</li>
+        </ul>
+      </div>
+
+      <!-- 6. Image/Pic Category -->
+      <div class="category-card">
+        <div class="category-header">
+          <div class="category-icon">🖼️</div>
+          <div>
+            <h3>Image / Pic OCR</h3>
+            <span style="font-size: 0.75rem; color: var(--accent-green);">Vision AI Extraction</span>
+          </div>
+        </div>
+        <p>Upload `.png`, `.jpg`, or screenshot images to parse text, scan tables, and analyze visual data.</p>
+        <ul class="feature-list">
+          <li>Gemini Vision OCR text scanning</li>
+          <li>Convert printed tables in images into CSVs</li>
+          <li>Visual document analysis & key-value extraction</li>
+          <li>Export structured data from photos</li>
+        </ul>
+      </div>
+
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 PuraLang Cloud Workspace. Built for next-generation multi-format data manipulation.</p>
+  </footer>
+
+</body>
+</html>

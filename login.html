@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authentication | PuraLang Cloud</title>
+  <style>
+    :root {
+      --bg-dark: #0a0f0d;
+      --card-bg: #121c17;
+      --accent-green: #00e676;
+      --accent-glow: rgba(0, 230, 118, 0.25);
+      --text-main: #ecf0f1;
+      --text-muted: #95a5a6;
+      --border-color: #1b2e25;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .login-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .logo-img {
+      width: 60px;
+      height: 60px;
+      display: block;
+      margin: 0 auto 1rem;
+      color: var(--accent-green);
+      filter: drop-shadow(0 0 10px var(--accent-green));
+    }
+
+    .login-card h2 {
+      margin-bottom: 0.5rem;
+      font-size: 1.8rem;
+    }
+
+    .login-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background-color: #080d0a;
+      color: var(--text-main);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 0.8rem;
+      background-color: var(--accent-green);
+      color: var(--bg-dark);
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-submit:hover {
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .toggle-link {
+      display: inline-block;
+      margin-top: 1.2rem;
+      color: var(--accent-green);
+      font-size: 0.88rem;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    .toggle-link:hover {
+      color: #52ff9d;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 1.5rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .back-link:hover {
+      color: var(--accent-green);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin: 1.4rem 0;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background-color: var(--border-color);
+    }
+
+    .btn-guest {
+      display: block;
+      width: 100%;
+      padding: 0.75rem;
+      background-color: transparent;
+      color: var(--accent-green);
+      border: 1px solid var(--accent-green);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-guest:hover {
+      background-color: var(--accent-green);
+      color: var(--bg-dark);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .status-msg {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      min-height: 20px;
+    }
+    .status-msg.error { color: #ff5252; }
+    .status-msg.success { color: var(--accent-green); }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <svg class="logo-img" viewBox="30 25 200 205" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>PuraLang Cloud</title>
+      <rect x="123" y="48" width="14" height="14" fill="currentColor" opacity="0.9" transform="rotate(45 130 55)"/>
+      <rect x="83" y="58" width="12" height="12" fill="currentColor" opacity="0.65" transform="rotate(45 89 64)"/>
+      <rect x="163" y="58" width="12" height="12" fill="currentColor" opacity="0.65" transform="rotate(45 169 64)"/>
+      <path d="M70 85 L190 85 L148 148 L148 188 L112 188 L112 148 Z" fill="none" stroke="currentColor" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="130" cy="208" r="9" fill="currentColor"/>
+    </svg>
+
+    <h2 id="formTitle">Welcome Back</h2>
+    <p id="formDesc">Sign in to access your PuraLang workspace</p>
+
+    <!-- Sign In Form -->
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="loginUsername">Username</label>
+        <input type="text" id="loginUsername" placeholder="Enter username" required>
+      </div>
+
+      <div class="form-group">
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" placeholder="Enter password" required>
+      </div>
+
+      <button type="submit" class="btn-submit">Sign In</button>
+    </form>
+
+    <!-- Register Form (Hidden by default) -->
+    <form id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label for="regUsername">Username</label>
+        <input type="text" id="regUsername" placeholder="Choose a username" required>
+      </div>
+
+      <div class="form-group">
+        <label for="regEmail">Email Address</label>
+        <input type="email" id="regEmail" placeholder="name@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="regPassword">Password</label>
+        <input type="password" id="regPassword" placeholder="Create a password" required>
+      </div>
+
+      <button type="submit" class="btn-submit">Create Account</button>
+    </form>
+
+    <div id="statusMsg" class="status-msg"></div>
+
+    <span class="toggle-link" id="toggleAuth" onclick="toggleView()">Don't have an account? Register here</span>
+
+    <div class="divider">or</div>
+
+    <!-- Direct access link -->
+    <a href="workspace" class="btn-guest">Continue as Guest</a>
+
+    <a href="landing.html" class="back-link">&larr; Back to Landing Page</a>
+  </div>
+
+  <script>
+    let isRegistering = false;
+
+    function toggleView() {
+      isRegistering = !isRegistering;
+      
+      document.getElementById('loginForm').style.display = isRegistering ? 'none' : 'block';
+      document.getElementById('registerForm').style.display = isRegistering ? 'block' : 'none';
+      
+      document.getElementById('formTitle').innerText = isRegistering ? 'Create Account' : 'Welcome Back';
+      document.getElementById('formDesc').innerText = isRegistering ? 'Join PuraLang Cloud workspace' : 'Sign in to access your PuraLang workspace';
+      
+      document.getElementById('toggleAuth').innerText = isRegistering ? 'Already have an account? Sign In' : "Don't have an account? Register here";
+      
+      const status = document.getElementById('statusMsg');
+      status.innerText = '';
+      status.className = 'status-msg';
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const user = document.getElementById('loginUsername').value;
+      const pass = document.getElementById('loginPassword').value;
+      const status = document.getElementById('statusMsg');
+
+      status.innerText = 'Authenticating...';
+      status.className = 'status-msg';
+
+      const formData = new FormData();
+      formData.append('username', user);
+      formData.append('password', pass);
+
+      try {
+        const res = await fetch('/api/v1/login', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          localStorage.setItem('puralang_token', data.access_token);
+          localStorage.setItem('puralang_user', data.username);
+          status.innerText = 'Login successful! Redirecting...';
+          status.className = 'status-msg success';
+          setTimeout(() => {
+            window.location.href = 'workspace';
+          }, 800);
+        } else {
+          status.innerText = data.detail || 'Login failed. Invalid username or password.';
+          status.className = 'status-msg error';
+        }
+      } catch (err) {
+        status.innerText = 'Server error. Is main.py running?';
+        status.className = 'status-msg error';
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const user = document.getElementById('regUsername').value;
+      const email = document.getElementById('regEmail').value;
+      const pass = document.getElementById('regPassword').value;
+      const status = document.getElementById('statusMsg');
+
+      status.innerText = 'Saving to database...';
+      status.className = 'status-msg';
+
+      try {
+        const res = await fetch('/api/v1/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: user,
+            email: email,
+            password: pass
+          })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          status.innerText = 'Account created! Please sign in.';
+          status.className = 'status-msg success';
+          setTimeout(() => {
+            toggleView();
+            document.getElementById('loginUsername').value = user;
+          }, 1200);
+        } else {
+          status.innerText = data.detail || 'Registration failed.';
+          status.className = 'status-msg error';
+        }
+      } catch (err) {
+        status.innerText = 'Server error during registration.';
+        status.className = 'status-msg error';
+      }
+    }
+
+    // Auto-switch view if URL contains ?action=register
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('action') === 'register') {
+        toggleView();
+      }
+    });
+  </script>
+
+</body>
+</html>
