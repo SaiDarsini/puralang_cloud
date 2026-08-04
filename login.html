@@ -176,6 +176,7 @@
       margin-top: 1rem;
       font-size: 0.85rem;
       min-height: 20px;
+      word-break: break-word;
     }
     .status-msg.error { color: #ff5252; }
     .status-msg.success { color: var(--accent-green); }
@@ -330,11 +331,16 @@
             document.getElementById('loginUsername').value = user;
           }, 1200);
         } else {
-          status.innerText = data.detail || 'Registration failed.';
+          // Extracts detail object or string from FastAPI error response
+          let errorMsg = 'Registration failed.';
+          if (data && data.detail) {
+            errorMsg = typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail);
+          }
+          status.innerText = errorMsg;
           status.className = 'status-msg error';
         }
       } catch (err) {
-        status.innerText = 'Server error during registration.';
+        status.innerText = 'Network/Server Error: ' + err.message;
         status.className = 'status-msg error';
       }
     }

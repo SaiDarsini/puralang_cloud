@@ -82,7 +82,7 @@ SECRET_KEY = os.getenv("JWT_SECRET_KEY", "puralang_super_secret_jwt_key_2026")
 ALGORITHM = "HS256"
 TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["pbkdf2_sha256", "bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/login", auto_error=False)
 
 # Configure Gemini API Key if present
@@ -133,7 +133,10 @@ LATEST_EXTRACTED_DF = None
 # 0. DATABASE SETUP (puralang.db)
 # ==========================================
 
-DB_FILE = "puralang.db"
+#DB_FILE = "puralang.db"
+DB_FILE = os.path.join(os.path.dirname(__file__), "puralang.db")
+
+
 
 def get_db():
     conn = sqlite3.connect(DB_FILE)
