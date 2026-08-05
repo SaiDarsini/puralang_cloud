@@ -21,13 +21,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 
-# 1. Instantiate app HERE first
-app = FastAPI(title="PuraLang Cloud API")
+
 
 # 2. Define the route AFTER app is instantiated
-@app.get("/robots.txt", include_in_schema=False)
-def serve_robots():
-    return FileResponse("robots.txt")
 # Gemini AI integration check
 try:
     import google.generativeai as genai
@@ -110,7 +106,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+# Place your route HERE after app and middleware are initialized
+@app.get("/robots.txt", include_in_schema=False)
+def serve_robots():
+    return FileResponse("robots.txt")
 class PromptRequest(BaseModel):
     prompt: str
     filename: str = "dataset.csv"
