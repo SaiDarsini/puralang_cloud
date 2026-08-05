@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Allow: /landing.html
+Allow: /login.html
+Allow: /workspace
+
+Disallow: /api/

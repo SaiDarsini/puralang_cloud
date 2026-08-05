@@ -21,6 +21,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse, JSONResponse
 from pydantic import BaseModel
 
+from fastapi.responses import FileResponse
+
+@app.get("/robots.txt", include_in_schema=False)
+def serve_robots():
+    return FileResponse("robots.txt")
 # Gemini AI integration check
 try:
     import google.generativeai as genai
