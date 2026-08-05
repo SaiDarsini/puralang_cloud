@@ -16,13 +16,15 @@ from passlib.context import CryptContext
 import jwt
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Depends, status
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, StreamingResponse, JSONResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 
-from fastapi.responses import FileResponse
+# 1. Instantiate app HERE first
+app = FastAPI(title="PuraLang Cloud API")
 
+# 2. Define the route AFTER app is instantiated
 @app.get("/robots.txt", include_in_schema=False)
 def serve_robots():
     return FileResponse("robots.txt")
